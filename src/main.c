@@ -5,10 +5,11 @@
 #include "formula.c"
 #include "render.c"
 
-static const int MAX_FORMULA_INPUT = 100;
+const int MAX_FORMULA_INPUT = 100;
 
 int main(const int argc, char *argv[])
 {
+  // Initialize random
   srand(time(NULL));
 
   char *FILE;
@@ -24,16 +25,10 @@ int main(const int argc, char *argv[])
     H = strtof(argv[3], NULL);
     X = strtof(argv[4], NULL);
     Y = strtof(argv[5], NULL);
-
-    printf("FILE: %s\n", FILE);
-    printf("   W: %g\n", W);
-    printf("   H: %g\n", H);
-    printf("   X: %g\n", X);
-    printf("   Y: %g\n", Y);
   }
   else if (argc != 1)
   {
-    printf("Incorrect amount of arguments supplied, I'm afraid\n");
+    printf("Incorrect amount of arguments supplied I'm afraid\n");
     return -1;
   }
 
@@ -66,7 +61,7 @@ int main(const int argc, char *argv[])
         return 0;
       }
 
-      create_svg(FILE, X, Y, W, H, formulae, formula_count);
+      create_svg_file(FILE, X, Y, W, H, formulae, formula_count);
 
       return 0;
     default:

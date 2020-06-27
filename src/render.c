@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <time.h>
+#include "render.h"
 
-static const int TABLE_CELL_WIDTH = 5;
-static const float TABLE_X[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
+extern const int TABLE_CELL_WIDTH;
+extern const float TABLE_X[];
 
 char *generate_random_color()
 {
@@ -23,7 +25,7 @@ char *generate_random_color()
   return buffer;
 }
 
-void create_svg(char *file, float x, float y, float width, float height, struct Formula formulae[], size_t formula_count)
+void create_svg_file(char *file, float x, float y, float width, float height, struct Formula formulae[], size_t formula_count)
 {
   FILE *fp = fopen(file, "w+");
 
@@ -142,16 +144,32 @@ void create_svg(char *file, float x, float y, float width, float height, struct 
     // Formula line
     fprintf(fp, "<path d='");
 
+    bool outside_boundaries = true;
     for (int j = 0; j <= width; j++)
     {
       // M is for starting a path, L is for moving a line to a point
-      char movement = j == 0 ? 'M' : 'L';
+      char movement = outside_boundaries ? 'M' : 'L';
 
       float plot_x = (j - center_x) / x_step;
       float plot_y = apply_maths(formulae[i].type, plot_x, formulae[i].a);
 
       float path_x = plot_x * x_step + center_x;
       float path_y = -plot_y * y_step + center_y;
+
+      if ((path_x < 0 || path_x > width) || (path_y < 0 || path_y > height))
+      {
+        // Don't print if previous was already out of boundaries
+        if (outside_boundaries)
+        {
+          continue;
+        }
+
+        outside_boundaries = true;
+      }
+      else
+      {
+        outside_boundaries = false;
+      }
 
       fprintf(fp, "%c %g %g", movement, path_x, path_y);
     }

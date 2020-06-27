@@ -3,26 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include "formula.h"
 
-static const int MAX_FORMULA_TOKENS = 5;
-
-enum input_type
-{
-  exit_input,
-  bad_formula,
-  linear_formula,
-  positive_formula,
-  negative_formula,
-  cos_formula,
-  sin_formula
-};
-
-typedef struct Formula
-{
-  char *input;
-  enum input_type type;
-  float a;
-} Formula;
+extern const int MAX_FORMULA_TOKENS;
 
 float apply_maths(enum input_type type, float x, const float a)
 {
@@ -38,6 +21,8 @@ float apply_maths(enum input_type type, float x, const float a)
     return cos(x);
   case sin_formula:
     return sin(x);
+  case tg_formula:
+    return tan(x);
   case exit_input:
     printf("Incorrect formula type exit supplied\n");
     exit(-1);
@@ -130,6 +115,17 @@ enum input_type parse_input(const char *input, float *a)
     if (strlen(groups[3]) == 1 && groups[3][0] == 'x')
     {
       return sin_formula;
+    }
+
+    return bad_formula;
+  }
+
+  // y = tg x
+  if (group_index == 3 && strncmp(groups[2], "tg", 3) == 0)
+  {
+    if (strlen(groups[3]) == 1 && groups[3][0] == 'x')
+    {
+      return tg_formula;
     }
 
     return bad_formula;
