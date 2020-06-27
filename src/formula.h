@@ -28,7 +28,7 @@ typedef struct Formula
   float a;
 } Formula;
 
-float apply_maths(enum input_type type, float x, const float a);
+float apply_maths(struct Formula formula, float x);
 
 enum input_type parse_input(const char *input, float *a);
 

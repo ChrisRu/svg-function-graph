@@ -161,7 +161,7 @@ void create_svg_file(char *file, float x, float y, float width, float height, st
     for (int j = 0; j <= width; j++)
     {
       float plot_x = (j - center_x) / x_step;
-      float plot_y = apply_maths(formulae[i].type, plot_x, formulae[i].a);
+      float plot_y = apply_maths(formulae[i], plot_x);
 
       // M is for starting a path, L is for moving a line to a point
       char movement = outside_boundaries || !should_draw_line(formulae[i].type, plot_y, prev_plot_y) ? 'M' : 'L';

@@ -7,16 +7,16 @@
 
 extern const int MAX_FORMULA_TOKENS;
 
-float apply_maths(enum input_type type, float x, const float a)
+float apply_maths(struct Formula formula, float x)
 {
-  switch (type)
+  switch (formula.type)
   {
   case linear_formula:
-    return x * a;
+    return x * formula.a;
   case positive_formula:
-    return x + a;
+    return x + formula.a;
   case negative_formula:
-    return x - a;
+    return x - formula.a;
   case cos_formula:
     return cos(x);
   case sin_formula:
@@ -58,12 +58,6 @@ enum input_type parse_input(const char *input, float *a)
     }
     else
     {
-      if (group_index > 4)
-      {
-        // Too many arguments supplied
-        return bad_formula;
-      }
-
       if (was_space)
       {
         was_space = false;

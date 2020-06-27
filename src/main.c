@@ -65,22 +65,24 @@ int main(const int argc, char *argv[])
 
       return 0;
     default:
-      for (size_t i = 0; i < sizeof(TABLE_X) / sizeof(TABLE_X[0]); i++)
-      {
-        table_y[i] = apply_maths(input_type, TABLE_X[i], a);
-      }
-
-      struct Formula new_item;
+    {
+      struct Formula new_formula;
       char *cloned_formula = malloc(strlen(formula) * sizeof(char));
       strcpy(cloned_formula, formula);
-      new_item.input = cloned_formula;
-      new_item.type = input_type;
-      new_item.a = a;
-      formulae[formula_count++] = new_item;
+      new_formula.input = cloned_formula;
+      new_formula.type = input_type;
+      new_formula.a = a;
+      formulae[formula_count++] = new_formula;
+
+      for (size_t i = 0; i < sizeof(TABLE_X) / sizeof(TABLE_X[0]); i++)
+      {
+        table_y[i] = apply_maths(new_formula, TABLE_X[i]);
+      }
 
       print_table(TABLE_X, table_y, sizeof(TABLE_X) / sizeof(TABLE_X[0]));
 
       break;
+    }
     }
   }
 
