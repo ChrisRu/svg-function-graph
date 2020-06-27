@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include "render.h"
+#include "formula.h"
 
 extern const int TABLE_CELL_WIDTH;
 extern const float TABLE_X[];
@@ -23,6 +24,17 @@ char *generate_random_color()
   char *buffer = malloc(needed + 1);
   sprintf(buffer, format, r, g, b);
   return buffer;
+}
+
+bool should_draw_line(enum input_type type, float plot_y, float prev_plot_y)
+{
+  switch (type)
+  {
+  case tg_formula:
+    return prev_plot_y - plot_y < 0;
+  default:
+    return true;
+  }
 }
 
 void create_svg_file(char *file, float x, float y, float width, float height, struct Formula formulae[], size_t formula_count)
@@ -144,18 +156,22 @@ void create_svg_file(char *file, float x, float y, float width, float height, st
     // Formula line
     fprintf(fp, "<path d='");
 
+    float prev_plot_y = 0;
     bool outside_boundaries = true;
     for (int j = 0; j <= width; j++)
     {
-      // M is for starting a path, L is for moving a line to a point
-      char movement = outside_boundaries ? 'M' : 'L';
-
       float plot_x = (j - center_x) / x_step;
       float plot_y = apply_maths(formulae[i].type, plot_x, formulae[i].a);
+
+      // M is for starting a path, L is for moving a line to a point
+      char movement = outside_boundaries || !should_draw_line(formulae[i].type, plot_y, prev_plot_y) ? 'M' : 'L';
+
+      prev_plot_y = plot_y;
 
       float path_x = plot_x * x_step + center_x;
       float path_y = -plot_y * y_step + center_y;
 
+      // This is (unnecessary) optimization, to not draw points that are out of bounds
       if ((path_x < 0 || path_x > width) || (path_y < 0 || path_y > height))
       {
         // Don't print if previous was already out of boundaries

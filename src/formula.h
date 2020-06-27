@@ -1,3 +1,6 @@
+#ifndef FORMULA_INCLUDED
+#define FORMULA_INCLUDED
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -28,3 +31,5 @@ typedef struct Formula
 float apply_maths(enum input_type type, float x, const float a);
 
 enum input_type parse_input(const char *input, float *a);
+
+#endif /* FORMULA_INCLUDED */
