@@ -10,13 +10,15 @@ extern const float TABLE_X[];
 
 char *generate_random_color()
 {
-  int r = rand() % 256;
-  int g = rand() % 256;
-  int b = rand() % 256;
+  int r = 255;
+  int g = 255;
+  int b = 255;
 
-  if ((r + g + b) / 3 > 150)
+  while ((r + g + b) / 3 > 150)
   {
-    return generate_random_color();
+    r = rand() % 256;
+    g = rand() % 256;
+    b = rand() % 256;
   }
 
   const char format[] = "rgb(%u,%u,%u)";
@@ -202,12 +204,15 @@ void print_table(const float *x, const float *y, size_t cell_count)
 {
   const int label_width = 5;
   int table_width = label_width + (cell_count * (TABLE_CELL_WIDTH + 1));
-  char *header = malloc(table_width * sizeof(char));
-  char *row_x = malloc(table_width * sizeof(char));
-  char *row_y = malloc(table_width * sizeof(char));
-  strncpy(header, "+---+", label_width);
-  strncpy(row_x, "| x |", label_width);
-  strncpy(row_y, "| y |", label_width);
+  char *header = malloc((table_width + 1) * sizeof(char));
+  char *row_x = malloc((table_width + 1) * sizeof(char));
+  char *row_y = malloc((table_width + 1) * sizeof(char));
+  strncpy(header, "+---+", label_width + 1);
+  strncpy(row_x, "| x |", label_width + 1);
+  strncpy(row_y, "| y |", label_width + 1);
+  header[table_width + 1] = '\0';
+  row_x[table_width + 1] = '\0';
+  row_y[table_width + 1] = '\0';
 
   // populate header line
   for (int i = 0; i <= table_width - label_width; i++)
@@ -226,12 +231,12 @@ void print_table(const float *x, const float *y, size_t cell_count)
   for (size_t i = 0; i < cell_count; i++)
   {
     int offset = label_width + (i * (TABLE_CELL_WIDTH + 1));
-    char content_x[TABLE_CELL_WIDTH];
-    char content_y[TABLE_CELL_WIDTH];
+    char content_x[TABLE_CELL_WIDTH + 1];
+    char content_y[TABLE_CELL_WIDTH + 1];
     sprintf(content_x, "% *.2f", TABLE_CELL_WIDTH, x[i]);
     sprintf(content_y, "% *.2f", TABLE_CELL_WIDTH, y[i]);
-    strncpy(row_x + offset, content_x, TABLE_CELL_WIDTH);
-    strncpy(row_y + offset, content_y, TABLE_CELL_WIDTH);
+    strncpy(row_x + offset, content_x, TABLE_CELL_WIDTH + 1);
+    strncpy(row_y + offset, content_y, TABLE_CELL_WIDTH + 1);
     row_x[offset + TABLE_CELL_WIDTH] = '|';
     row_y[offset + TABLE_CELL_WIDTH] = '|';
   }

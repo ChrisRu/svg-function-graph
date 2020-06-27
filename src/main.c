@@ -32,13 +32,15 @@ int main(const int argc, char *argv[])
     return -1;
   }
 
-  struct Formula formulae[30];
+  struct Formula formulae[60];
   size_t formula_count = 0;
   while (true)
   {
     char formula[MAX_FORMULA_INPUT];
     float table_y[11];
     float a;
+    float b;
+    float c;
     enum input_type input_type;
 
     printf("\n > ");
@@ -47,7 +49,7 @@ int main(const int argc, char *argv[])
       break;
     }
 
-    input_type = parse_input(formula, &a);
+    input_type = parse_input(formula, &a, &b, &c);
     switch (input_type)
     {
     case bad_formula:
@@ -67,11 +69,13 @@ int main(const int argc, char *argv[])
     default:
     {
       struct Formula new_formula;
-      char *cloned_formula = malloc(strlen(formula) * sizeof(char));
+      char *cloned_formula = malloc((strlen(formula) + 1) * sizeof(char));
       strcpy(cloned_formula, formula);
       new_formula.input = cloned_formula;
       new_formula.type = input_type;
-      new_formula.a = a;
+      new_formula.a = roundf(a * 100) / 100;
+      new_formula.b = roundf(b * 100) / 100;
+      new_formula.c = roundf(c * 100) / 100;
       formulae[formula_count++] = new_formula;
 
       for (size_t i = 0; i < sizeof(TABLE_X) / sizeof(TABLE_X[0]); i++)

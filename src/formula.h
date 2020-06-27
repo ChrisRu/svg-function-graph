@@ -7,18 +7,18 @@
 #include <ctype.h>
 #include <math.h>
 
-const int MAX_FORMULA_TOKENS = 5;
+const int MAX_FORMULA_TOKENS = 8;
 
 enum input_type
 {
   exit_input,
   bad_formula,
   linear_formula,
-  positive_formula,
-  negative_formula,
+  additive_formula,
   cos_formula,
   sin_formula,
-  tg_formula
+  tg_formula,
+  quadratic_formula
 };
 
 typedef struct Formula
@@ -26,10 +26,12 @@ typedef struct Formula
   char *input;
   enum input_type type;
   float a;
+  float b;
+  float c;
 } Formula;
 
 float apply_maths(struct Formula formula, float x);
 
-enum input_type parse_input(const char *input, float *a);
+enum input_type parse_input(const char *input, float *a, float *b, float *c);
 
 #endif /* FORMULA_INCLUDED */

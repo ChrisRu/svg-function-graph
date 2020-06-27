@@ -13,16 +13,16 @@ float apply_maths(struct Formula formula, float x)
   {
   case linear_formula:
     return x * formula.a;
-  case positive_formula:
+  case additive_formula:
     return x + formula.a;
-  case negative_formula:
-    return x - formula.a;
   case cos_formula:
     return cos(x);
   case sin_formula:
     return sin(x);
   case tg_formula:
     return tan(x);
+  case quadratic_formula:
+    return (formula.a * pow(x, 2)) + (formula.b * x) + formula.c;
   case exit_input:
     printf("Incorrect formula type exit supplied\n");
     exit(-1);
@@ -35,7 +35,7 @@ float apply_maths(struct Formula formula, float x)
   }
 }
 
-enum input_type parse_input(const char *input, float *a)
+enum input_type parse_input(const char *input, float *a, float *b, float *c)
 {
   size_t input_size = strlen(input);
 
@@ -61,7 +61,7 @@ enum input_type parse_input(const char *input, float *a)
       if (was_space)
       {
         was_space = false;
-        groups[++group_index] = malloc(20 * sizeof(char));
+        groups[++group_index] = malloc(30 * sizeof(char));
       }
 
       groups[group_index][++letter_index] = input[i];
@@ -129,33 +129,29 @@ enum input_type parse_input(const char *input, float *a)
   // y = x - a
   if (group_index == 4 && strlen(groups[3]) == 1 && (groups[3][0] == '-' || groups[3][0] == '+'))
   {
-    if (isdigit(groups[4][0]))
+    char *end_ptr_a;
+    *a = strtof(groups[4], &end_ptr_a);
+    // error if number parsing went bad
+    if (*end_ptr_a != '\0' || groups[4] == end_ptr_a)
     {
-      char *end_ptr;
-      *a = strtof(groups[4], &end_ptr);
-      *a = roundf(*a * 100) / 100;
-
-      // error if number parsing went bad
-      if (*end_ptr != '\0' || groups[4] == end_ptr)
-      {
-        return bad_formula;
-      }
-
-      return groups[3][0] == '+' ? positive_formula : negative_formula;
+      return bad_formula;
     }
 
-    return bad_formula;
+    if (groups[3][0] == '-')
+    {
+      *a = -*a;
+    }
+
+    return additive_formula;
   }
 
   // y = a x
   if (group_index == 3 && (isdigit(groups[2][0]) || (strlen(groups[2]) > 1 && groups[2][0] == '-')))
   {
-    char *end_ptr;
-    *a = strtof(groups[2], &end_ptr);
-    *a = roundf(*a * 100) / 100;
-
+    char *end_ptr_a;
+    *a = strtof(groups[2], &end_ptr_a);
     // error if number parsing went bad
-    if (*end_ptr != '\0' || groups[2] == end_ptr)
+    if (*end_ptr_a != '\0' || groups[2] == end_ptr_a)
     {
       return bad_formula;
     }
@@ -166,6 +162,66 @@ enum input_type parse_input(const char *input, float *a)
     }
 
     return linear_formula;
+  }
+
+  // y = a x2 + b x + c
+  if (group_index == 8)
+  {
+    char *end_ptr_a;
+    *a = strtof(groups[2], &end_ptr_a);
+    // error if number parsing went bad
+    if (*end_ptr_a != '\0' || groups[2] == end_ptr_a)
+    {
+      return bad_formula;
+    }
+
+    if (strncmp(groups[3], "x2", 4) != 0)
+    {
+      return bad_formula;
+    }
+
+    if (strlen(groups[6]) != 1 && groups[6][0] != 'x')
+    {
+      return bad_formula;
+    }
+
+    char *end_ptr_b;
+    *b = strtof(groups[5], &end_ptr_b);
+    // error if number parsing went bad
+    if (*end_ptr_b != '\0' || groups[5] == end_ptr_b)
+    {
+      return bad_formula;
+    }
+
+    char *end_ptr_c;
+    *c = strtof(groups[8], &end_ptr_c);
+    // error if number parsing went bad
+    if (*end_ptr_c != '\0' || groups[8] == end_ptr_c)
+    {
+      return bad_formula;
+    }
+
+    if (strlen(groups[4]) != 1 || (groups[4][0] != '-' && groups[4][0] != '+'))
+    {
+      return bad_formula;
+    }
+
+    if (groups[4][0] == '-')
+    {
+      *b = -*b;
+    }
+
+    if (strlen(groups[7]) != 1 || (groups[7][0] != '-' && groups[7][0] != '+'))
+    {
+      return bad_formula;
+    }
+
+    if (groups[7][0] == '-')
+    {
+      // *c = -*c;
+    }
+
+    return quadratic_formula;
   }
 
   return bad_formula;
