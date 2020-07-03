@@ -38,9 +38,9 @@ int main(const int argc, char *argv[])
   {
     char formula[MAX_FORMULA_INPUT];
     float table_y[11];
-    float a;
-    float b;
-    float c;
+    float a = 0;
+    float b = 0;
+    float c = 0;
     enum input_type input_type;
 
     printf("\n > ");

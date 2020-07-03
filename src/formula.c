@@ -218,7 +218,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
 
     if (groups[7][0] == '-')
     {
-      // *c = -*c;
+      *c = -*c;
     }
 
     return quadratic_formula;
