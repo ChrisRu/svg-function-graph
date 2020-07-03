@@ -1,5 +1,11 @@
 # Make SVG Graph from formulas
 
+## Building
+
+Requires make and gcc to be installed. In the root folder, run:
+
+`make`
+
 ## Running without generating SVG file
 
 `./svggraph`
@@ -20,3 +26,4 @@ Replace a, b, c with numbers.
 - `y = sin a`
 - `y = cos a`
 - `y = tg a`
+- HARD WIP: `y = a x2 + b x + c`
