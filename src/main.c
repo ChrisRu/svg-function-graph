@@ -5,7 +5,6 @@
 #include "formula.c"
 #include "render.c"
 
-#define PREVIEW_TABLE_SIZE 11
 #define MAX_FORMULAE 11
 #define MAX_FORMULA_INPUT 100
 
@@ -18,7 +17,7 @@ float Y;
 struct Formula *formulae[MAX_FORMULAE];
 size_t formula_count = 0;
 
-float table_y[PREVIEW_TABLE_SIZE];
+float table_y[sizeof(TABLE_X)];
 
 int main(const int argc, char *argv[])
 {

@@ -26,4 +26,4 @@ Replace a, b, c with numbers.
 - `y = sin a`
 - `y = cos a`
 - `y = tg a` or `y = tan a`
-- HARD WIP: `y = a x2 + b x + c`
+- `y = a x2 + b x + c`
