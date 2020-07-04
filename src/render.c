@@ -7,6 +7,9 @@
 
 extern const int TABLE_CELL_WIDTH;
 extern const float TABLE_X[];
+extern const char TABLE_LABEL[];
+extern const char TABLE_LABEL_X[];
+extern const char TABLE_LABEL_Y[];
 
 char *generate_random_color()
 {
@@ -23,8 +26,9 @@ char *generate_random_color()
 
   const char format[] = "rgb(%u,%u,%u)";
   size_t needed = snprintf(NULL, 0, format, r, g, b);
-  char *buffer = malloc(needed + 1);
+  char *buffer = calloc(needed + 1, sizeof(char));
   sprintf(buffer, format, r, g, b);
+
   return buffer;
 }
 
@@ -39,7 +43,7 @@ bool should_draw_line(enum input_type type, float plot_y, float prev_plot_y)
   }
 }
 
-void create_svg_file(char *file, float x, float y, float width, float height, struct Formula formulae[], size_t formula_count)
+void create_svg_file(char *file, float x, float y, float width, float height, struct Formula *formulae[], size_t formula_count)
 {
   FILE *fp = fopen(file, "w+");
 
@@ -153,7 +157,7 @@ void create_svg_file(char *file, float x, float y, float width, float height, st
         text_x,
         text_y,
         color,
-        formulae[i].input);
+        formulae[i]->input);
 
     // Formula line
     fprintf(fp, "<path d='");
@@ -166,7 +170,7 @@ void create_svg_file(char *file, float x, float y, float width, float height, st
       float plot_y = apply_maths(formulae[i], plot_x);
 
       // M is for starting a path, L is for moving a line to a point
-      char movement = outside_boundaries || !should_draw_line(formulae[i].type, plot_y, prev_plot_y) ? 'M' : 'L';
+      char movement = outside_boundaries || !should_draw_line(formulae[i]->type, plot_y, prev_plot_y) ? 'M' : 'L';
 
       prev_plot_y = plot_y;
 
@@ -202,17 +206,15 @@ void create_svg_file(char *file, float x, float y, float width, float height, st
 
 void print_table(const float *x, const float *y, size_t cell_count)
 {
-  const int label_width = 5;
+  const int label_width = strlen(TABLE_LABEL);
+
   int table_width = label_width + (cell_count * (TABLE_CELL_WIDTH + 1));
-  char *header = malloc((table_width + 1) * sizeof(char));
-  char *row_x = malloc((table_width + 1) * sizeof(char));
-  char *row_y = malloc((table_width + 1) * sizeof(char));
-  strncpy(header, "+---+", label_width + 1);
-  strncpy(row_x, "| x |", label_width + 1);
-  strncpy(row_y, "| y |", label_width + 1);
-  header[table_width + 1] = '\0';
-  row_x[table_width + 1] = '\0';
-  row_y[table_width + 1] = '\0';
+  char *header = calloc((table_width + 1), sizeof(char));
+  char *row_x = calloc((table_width + 1), sizeof(char));
+  char *row_y = calloc((table_width + 1), sizeof(char));
+  strncpy(header, TABLE_LABEL, label_width + 1);
+  strncpy(row_x, TABLE_LABEL_X, label_width + 1);
+  strncpy(row_y, TABLE_LABEL_Y, label_width + 1);
 
   // populate header line
   for (int i = 0; i <= table_width - label_width; i++)
@@ -240,6 +242,10 @@ void print_table(const float *x, const float *y, size_t cell_count)
     row_x[offset + TABLE_CELL_WIDTH] = '|';
     row_y[offset + TABLE_CELL_WIDTH] = '|';
   }
+
+  header[table_width] = '\0';
+  row_x[table_width] = '\0';
+  row_y[table_width] = '\0';
 
   // print rows to screen
   printf("%s\n", header);

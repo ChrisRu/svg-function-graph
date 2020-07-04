@@ -25,5 +25,5 @@ Replace a, b, c with numbers.
 - `y = x - a`
 - `y = sin a`
 - `y = cos a`
-- `y = tg a`
+- `y = tg a` or `y = tan a`
 - HARD WIP: `y = a x2 + b x + c`

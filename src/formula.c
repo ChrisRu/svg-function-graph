@@ -6,15 +6,16 @@
 #include "formula.h"
 
 extern const int MAX_FORMULA_TOKENS;
+extern const int MAX_GROUP_SIZE;
 
-float apply_maths(struct Formula formula, float x)
+float apply_maths(struct Formula *formula, float x)
 {
-  switch (formula.type)
+  switch (formula->type)
   {
   case linear_formula:
-    return x * formula.a;
+    return x * formula->a;
   case additive_formula:
-    return x + formula.a;
+    return x + formula->a;
   case cos_formula:
     return cos(x);
   case sin_formula:
@@ -22,7 +23,7 @@ float apply_maths(struct Formula formula, float x)
   case tg_formula:
     return tan(x);
   case quadratic_formula:
-    return (formula.a * pow(x, 2)) + (formula.b * x) + formula.c;
+    return (formula->a * pow(x, 2)) + (formula->b * x) + formula->c;
   case exit_input:
     printf("Incorrect formula type exit supplied\n");
     exit(-1);
@@ -61,7 +62,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
       if (was_space)
       {
         was_space = false;
-        groups[++group_index] = malloc(30 * sizeof(char));
+        groups[++group_index] = calloc(MAX_GROUP_SIZE, sizeof(char));
       }
 
       groups[group_index][++letter_index] = input[i];
@@ -115,7 +116,8 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
   }
 
   // y = tg x
-  if (group_index == 3 && strncmp(groups[2], "tg", 3) == 0)
+  // y = tan x
+  if (group_index == 3 && (strncmp(groups[2], "tg", 3) == 0 || strncmp(groups[2], "tan", 3)))
   {
     if (strlen(groups[3]) == 1 && groups[3][0] == 'x')
     {

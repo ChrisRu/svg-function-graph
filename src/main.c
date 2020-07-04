@@ -5,22 +5,29 @@
 #include "formula.c"
 #include "render.c"
 
-const int MAX_FORMULA_INPUT = 100;
+#define PREVIEW_TABLE_SIZE 11
+#define MAX_FORMULAE 11
+#define MAX_FORMULA_INPUT 100
+
+char *SVG_FILE;
+float W;
+float H;
+float X;
+float Y;
+
+struct Formula *formulae[MAX_FORMULAE];
+size_t formula_count = 0;
+
+float table_y[PREVIEW_TABLE_SIZE];
 
 int main(const int argc, char *argv[])
 {
   // Initialize random
   srand(time(NULL));
 
-  char *FILE;
-  float W;
-  float H;
-  float X;
-  float Y;
-
   if (argc == 6)
   {
-    FILE = argv[1];
+    SVG_FILE = argv[1];
     W = strtof(argv[2], NULL);
     H = strtof(argv[3], NULL);
     X = strtof(argv[4], NULL);
@@ -32,50 +39,42 @@ int main(const int argc, char *argv[])
     return -1;
   }
 
-  struct Formula formulae[60];
-  size_t formula_count = 0;
   while (true)
   {
-    char formula[MAX_FORMULA_INPUT];
-    float table_y[11];
-    float a = 0;
-    float b = 0;
-    float c = 0;
-    enum input_type input_type;
+    char input[MAX_FORMULA_INPUT];
 
-    printf("\n > ");
-    if (fgets(formula, MAX_FORMULA_INPUT, stdin) == NULL)
+    printf("\n> ");
+    if (fgets(input, MAX_FORMULA_INPUT, stdin) == NULL)
     {
       break;
     }
 
-    input_type = parse_input(formula, &a, &b, &c);
-    switch (input_type)
+    struct Formula *new_formula = malloc(sizeof(struct Formula));
+    strcpy(new_formula->input, input);
+    new_formula->type = parse_input(input, &new_formula->a, &new_formula->b, &new_formula->c);
+    new_formula->a = roundf(new_formula->a * 100) / 100;
+    new_formula->b = roundf(new_formula->b * 100) / 100;
+    new_formula->c = roundf(new_formula->c * 100) / 100;
+
+    printf("%g | %g | %g | %s\n", new_formula->a, new_formula->b, new_formula->c, new_formula->input);
+    switch (new_formula->type)
     {
     case bad_formula:
       printf("Bad command or function\n");
       break;
     case exit_input:
       printf("Exiting...\n");
-      if (FILE == NULL)
+      if (SVG_FILE == NULL)
       {
         // No file supplied, no SVG writing needed
         return 0;
       }
 
-      create_svg_file(FILE, X, Y, W, H, formulae, formula_count);
+      create_svg_file(SVG_FILE, X, Y, W, H, formulae, formula_count);
 
       return 0;
     default:
     {
-      struct Formula new_formula;
-      char *cloned_formula = malloc((strlen(formula) + 1) * sizeof(char));
-      strcpy(cloned_formula, formula);
-      new_formula.input = cloned_formula;
-      new_formula.type = input_type;
-      new_formula.a = roundf(a * 100) / 100;
-      new_formula.b = roundf(b * 100) / 100;
-      new_formula.c = roundf(c * 100) / 100;
       formulae[formula_count++] = new_formula;
 
       for (size_t i = 0; i < sizeof(TABLE_X) / sizeof(TABLE_X[0]); i++)
