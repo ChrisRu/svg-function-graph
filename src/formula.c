@@ -36,9 +36,9 @@ float apply_maths(struct Formula *formula, float x)
   }
 }
 
-enum input_type parse_input(const char *input, float *a, float *b, float *c)
+enum input_type parse_input(struct Formula *formula)
 {
-  size_t input_size = strlen(input);
+  size_t input_size = strlen(formula->input);
 
   char *groups[MAX_FORMULA_TOKENS];
   bool was_space = true;
@@ -46,12 +46,12 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
   int letter_index = -1;
   for (size_t i = 0; i < input_size; ++i)
   {
-    if (input[i] == '\n')
+    if (formula->input[i] == '\n')
     {
       break;
     }
 
-    if (isspace(input[i]))
+    if (isspace(formula->input[i]))
     {
       was_space = true;
       letter_index = -1;
@@ -65,7 +65,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
         groups[++group_index] = calloc(MAX_GROUP_SIZE, sizeof(char));
       }
 
-      groups[group_index][++letter_index] = input[i];
+      groups[group_index][++letter_index] = formula->input[i];
       groups[group_index][letter_index + 1] = '\0';
     }
   }
@@ -117,7 +117,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
 
   // y = tg x
   // y = tan x
-  if (group_index == 3 && (strncmp(groups[2], "tg", 3) == 0 || strncmp(groups[2], "tan", 3)))
+  if (group_index == 3 && (strncmp(groups[2], "tg", 3) == 0 || strncmp(groups[2], "tan", 3) == 0))
   {
     if (strlen(groups[3]) == 1 && groups[3][0] == 'x')
     {
@@ -132,7 +132,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
   if (group_index == 4 && strlen(groups[3]) == 1 && (groups[3][0] == '-' || groups[3][0] == '+'))
   {
     char *end_ptr_a;
-    *a = strtof(groups[4], &end_ptr_a);
+    formula->a = strtof(groups[4], &end_ptr_a);
     // error if number parsing went bad
     if (*end_ptr_a != '\0' || groups[4] == end_ptr_a)
     {
@@ -141,7 +141,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
 
     if (groups[3][0] == '-')
     {
-      *a = -*a;
+      formula->a = -formula->a;
     }
 
     return additive_formula;
@@ -151,7 +151,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
   if (group_index == 3 && (isdigit(groups[2][0]) || (strlen(groups[2]) > 1 && groups[2][0] == '-')))
   {
     char *end_ptr_a;
-    *a = strtof(groups[2], &end_ptr_a);
+    formula->a = strtof(groups[2], &end_ptr_a);
     // error if number parsing went bad
     if (*end_ptr_a != '\0' || groups[2] == end_ptr_a)
     {
@@ -170,7 +170,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
   if (group_index == 8)
   {
     char *end_ptr_a;
-    *a = strtof(groups[2], &end_ptr_a);
+    formula->a = strtof(groups[2], &end_ptr_a);
     // error if number parsing went bad
     if (*end_ptr_a != '\0' || groups[2] == end_ptr_a)
     {
@@ -188,7 +188,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
     }
 
     char *end_ptr_b;
-    *b = strtof(groups[5], &end_ptr_b);
+    formula->b = strtof(groups[5], &end_ptr_b);
     // error if number parsing went bad
     if (*end_ptr_b != '\0' || groups[5] == end_ptr_b)
     {
@@ -196,7 +196,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
     }
 
     char *end_ptr_c;
-    *c = strtof(groups[8], &end_ptr_c);
+    formula->c = strtof(groups[8], &end_ptr_c);
     // error if number parsing went bad
     if (*end_ptr_c != '\0' || groups[8] == end_ptr_c)
     {
@@ -210,7 +210,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
 
     if (groups[4][0] == '-')
     {
-      *b = -*b;
+      formula->b = -formula->b;
     }
 
     if (strlen(groups[7]) != 1 || (groups[7][0] != '-' && groups[7][0] != '+'))
@@ -220,7 +220,7 @@ enum input_type parse_input(const char *input, float *a, float *b, float *c)
 
     if (groups[7][0] == '-')
     {
-      *c = -*c;
+      formula->c = -formula->c;
     }
 
     return quadratic_formula;

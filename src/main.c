@@ -51,7 +51,7 @@ int main(const int argc, char *argv[])
 
     struct Formula *new_formula = malloc(sizeof(struct Formula));
     strcpy(new_formula->input, input);
-    new_formula->type = parse_input(input, &new_formula->a, &new_formula->b, &new_formula->c);
+    new_formula->type = parse_input(new_formula);
     new_formula->a = roundf(new_formula->a * 100) / 100;
     new_formula->b = roundf(new_formula->b * 100) / 100;
     new_formula->c = roundf(new_formula->c * 100) / 100;

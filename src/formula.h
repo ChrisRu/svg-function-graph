@@ -35,6 +35,6 @@ typedef struct Formula
 
 float apply_maths(struct Formula *formula, float x);
 
-enum input_type parse_input(const char *input, float *a, float *b, float *c);
+enum input_type parse_input(struct Formula *formula);
 
 #endif /* FORMULA_INCLUDED */
