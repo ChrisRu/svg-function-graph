@@ -5,9 +5,6 @@
 #include <math.h>
 #include "formula.h"
 
-extern const int MAX_FORMULA_TOKENS;
-extern const int MAX_GROUP_SIZE;
-
 float apply_maths(struct Formula *formula, float x)
 {
   switch (formula->type)

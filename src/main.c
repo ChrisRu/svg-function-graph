@@ -7,7 +7,6 @@
 #include "table.c"
 
 #define MAX_FORMULAE 11
-#define MAX_FORMULA_INPUT 100
 
 char *SVG_FILE;
 float W;

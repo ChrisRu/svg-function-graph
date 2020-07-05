@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-const int TABLE_CELL_WIDTH = 6;
+#define TABLE_CELL_WIDTH 5
+
 const float TABLE_X[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
 const char TABLE_LABEL[] = "+---+";
 const char TABLE_LABEL_X[] = "| x |";

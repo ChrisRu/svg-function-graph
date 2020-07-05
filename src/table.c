@@ -1,6 +1,5 @@
 #include "table.h"
 
-extern const int TABLE_CELL_WIDTH;
 extern const float TABLE_X[];
 extern const char TABLE_LABEL[];
 extern const char TABLE_LABEL_X[];

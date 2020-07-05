@@ -8,9 +8,8 @@
 #include <math.h>
 
 #define MAX_FORMULA_INPUT 100
-
-const int MAX_FORMULA_TOKENS = 8;
-const int MAX_GROUP_SIZE = 5;
+#define MAX_FORMULA_TOKENS 8
+#define MAX_GROUP_SIZE 5
 
 enum input_type
 {
