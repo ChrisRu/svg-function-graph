@@ -14,7 +14,7 @@ float H;
 float X;
 float Y;
 
-struct Formula *formulae[MAX_FORMULAE];
+formula *formulae[MAX_FORMULAE];
 size_t formula_count = 0;
 
 float table_y[sizeof(TABLE_X)];
@@ -48,7 +48,7 @@ int main(const int argc, char *argv[])
       break;
     }
 
-    struct Formula *new_formula = malloc(sizeof(struct Formula));
+    formula *new_formula = malloc(sizeof(formula));
     strcpy(new_formula->input, input);
     new_formula->type = parse_input(new_formula);
     new_formula->a = roundf(new_formula->a * 100) / 100;

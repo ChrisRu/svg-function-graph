@@ -26,7 +26,7 @@ char *generate_random_color()
   return buffer;
 }
 
-bool should_draw_line(enum input_type type, float plot_y, float prev_plot_y)
+bool should_draw_line(input_type type, float plot_y, float prev_plot_y)
 {
   switch (type)
   {
@@ -37,7 +37,7 @@ bool should_draw_line(enum input_type type, float plot_y, float prev_plot_y)
   }
 }
 
-void create_svg_file(char *file, float x, float y, float width, float height, struct Formula *formulae[], size_t formula_count)
+void create_svg_file(char *file, float x, float y, float width, float height, formula *formulae[], size_t formula_count)
 {
   FILE *fp = fopen(file, "w+");
 

@@ -3,4 +3,4 @@
 #include <stdbool.h>
 #include <time.h>
 
-void create_svg_file(char *file, float x, float y, float width, float height, struct Formula *formulae[], size_t formula_count);
+void create_svg_file(char *file, float x, float y, float width, float height, formula *formulae[], size_t formula_count);

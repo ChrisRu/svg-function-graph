@@ -5,7 +5,7 @@
 #include <math.h>
 #include "formula.h"
 
-float apply_maths(struct Formula *formula, float x)
+float apply_maths(formula *formula, float x)
 {
   switch (formula->type)
   {
@@ -33,7 +33,7 @@ float apply_maths(struct Formula *formula, float x)
   }
 }
 
-enum input_type parse_input(struct Formula *formula)
+input_type parse_input(formula *formula)
 {
   size_t input_size = strlen(formula->input);
 

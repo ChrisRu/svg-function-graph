@@ -11,7 +11,7 @@
 #define MAX_FORMULA_TOKENS 8
 #define MAX_GROUP_SIZE 5
 
-enum input_type
+typedef enum input_type
 {
   exit_input,
   bad_formula,
@@ -21,19 +21,19 @@ enum input_type
   sin_formula,
   tg_formula,
   quadratic_formula
-};
+} input_type;
 
-typedef struct Formula
+typedef struct formula
 {
   char input[MAX_FORMULA_INPUT];
-  enum input_type type;
+  input_type type;
   float a;
   float b;
   float c;
-} Formula;
+} formula;
 
-float apply_maths(struct Formula *formula, float x);
+float apply_maths(formula *formula, float x);
 
-enum input_type parse_input(struct Formula *formula);
+input_type parse_input(formula *formula);
 
 #endif /* FORMULA_INCLUDED */
