@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <time.h>
 #include "formula.c"
-#include "render.c"
+#include "svg.c"
+#include "table.c"
 
 #define MAX_FORMULAE 11
 #define MAX_FORMULA_INPUT 100
@@ -55,7 +56,6 @@ int main(const int argc, char *argv[])
     new_formula->b = roundf(new_formula->b * 100) / 100;
     new_formula->c = roundf(new_formula->c * 100) / 100;
 
-    printf("%g | %g | %g | %s\n", new_formula->a, new_formula->b, new_formula->c, new_formula->input);
     switch (new_formula->type)
     {
     case bad_formula:
